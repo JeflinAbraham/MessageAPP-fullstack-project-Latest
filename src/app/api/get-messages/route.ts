@@ -24,6 +24,13 @@ export async function GET(request: Request) {
     // the user which we stored in the session if u remember was stringified.
     // when using aggreagation pipeline we need to make sure that the user's ID is of type ObjectId.
     const userId = new mongoose.Types.ObjectId(_user._id);
+    const matchStage = await UserModel.aggregate([
+        { $match: { _id: userId } },
+        { $unwind: '$messages' },
+
+    ]).exec();
+    console.log("Match Stage Result:", matchStage);
+
     try {
         const user = await UserModel.aggregate([
             // This stage filters the documents in the UserModel collection to find the document where the _id field matches the userId variable. Only the document with the specified userId will be processed in the subsequent stages.
@@ -43,8 +50,10 @@ export async function GET(request: Request) {
         ]).exec();
 
         if (!user || user.length === 0) {
-            return Response.json(
-                { message: 'User not found', success: false },
+            return Response.json({
+                message: 'User not foundddd',
+                success: false
+            },
                 { status: 404 }
             );
         }

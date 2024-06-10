@@ -47,6 +47,8 @@ export default function SignInForm() {
             password: data.password,
         });
 
+        console.log(result);
+
         if (result?.error) {
             // If the sign-in attempt fails, the result object will contain an error property.
             toast({
