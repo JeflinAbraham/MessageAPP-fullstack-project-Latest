@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         return Response.json(
             {
                 success: true,
-                message: 'Email is unique',
+                message: 'Email is available',
             },
             { status: 200 }
         );

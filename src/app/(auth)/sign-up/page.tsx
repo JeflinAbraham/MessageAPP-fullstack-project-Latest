@@ -5,8 +5,6 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-
-
 // shadcn docs for form.
 // zodResolver for integrating Zod with React Hook Form.
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,9 +46,12 @@ export default function SignUpForm() {
 
     useDebounceCallback parameters: (function to debounce, delay)
     */
-    const debounced = useDebounceCallback(setUsername, 300);
+    const debounced = useDebounceCallback(setUsername, 400);
     useEffect(() => {
+
+        // To handle the case where the user starts typing and then erases all the input
         if(username == '') setIsCheckingUsername(false);
+
         const checkUsernameUnique = async () => {
             if (username) {
                 setIsCheckingUsername(true);
@@ -80,7 +81,7 @@ export default function SignUpForm() {
     }, [username]);
 
 
-    const debounced2 = useDebounceCallback(setEmail, 300);
+    const debounced2 = useDebounceCallback(setEmail, 500);
     useEffect(() => {
         if(email == '') setIsCheckingEmail(false);
         const checkEmailUnique = async () => {
@@ -133,7 +134,13 @@ export default function SignUpForm() {
         setIsSubmitting(true);
         try {
             const response = await axios.post('/api/sign-up', data);
-            if (response.data.success) router.replace(`/verify/${username}`);
+            if (response.data.success){
+                toast({
+                    title: 'Sign Up Success',
+                    description: response.data.message
+                });
+                router.replace(`/verify/${username}`);
+            }
             else {
                 toast({
                     title: 'Sign Up Failed',
@@ -179,13 +186,15 @@ export default function SignUpForm() {
 
                                             // Custom handler logic
                                             debounced(e.target.value);
+
+                                            // to dsiplay the loader as soon as the user starts typing.
                                             setIsCheckingUsername(true);
                                         }}
 
                                     />
                                     {isCheckingUsername && <Loader2 className="animate-spin" />}
                                     {!isCheckingUsername && usernameMessage && username && (
-                                        <p className={`text-sm ${usernameMessage === 'Username is unique' ? 'text-green-600' : 'text-red-600'}`}
+                                        <p className={`text-sm ${usernameMessage === 'Username is available' ? 'text-green-600' : 'text-red-600'}`}
                                         >
                                             {usernameMessage}
                                         </p>
@@ -223,8 +232,10 @@ export default function SignUpForm() {
 
                                     />
                                     {isCheckingEmail && <Loader2 className="animate-spin" />}
+
+                                    {/* && email: if the email is empty u dont want to display any texts. */}
                                     {!isCheckingEmail && emailMessage && email && (
-                                        <p className={`text-sm ${emailMessage === 'Email is unique' ? 'text-green-600' : 'text-red-600'}`}
+                                        <p className={`text-sm ${emailMessage === 'Email is available' ? 'text-green-600' : 'text-red-600'}`}
                                         >
                                             {emailMessage}
                                         </p>
