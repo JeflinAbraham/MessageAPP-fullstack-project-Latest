@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user.model";
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request, { params }: { params: { email: string } }) {
     await dbConnect();
@@ -12,10 +13,12 @@ export async function POST(req: Request, { params }: { params: { email: string }
             })
         }
         const newEmail = decodeURIComponent(params.email);
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
         const user = await User.findOneAndUpdate(
             { email: newEmail },
             {
-                password: newPassword
+                password: hashedPassword
             },
             { new: true }
         );

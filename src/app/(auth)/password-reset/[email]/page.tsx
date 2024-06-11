@@ -46,6 +46,7 @@ function page() {
                     title: 'Success',
                     description: response.data.message
                 })
+                router.replace('/sign-in');
             }
             else {
                 toast({
