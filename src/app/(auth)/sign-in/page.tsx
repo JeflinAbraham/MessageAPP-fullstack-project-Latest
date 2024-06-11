@@ -17,6 +17,8 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function SignInForm() {
     const router = useRouter();
@@ -39,7 +41,9 @@ export default function SignInForm() {
     signIn failure/ success is managed accordingly.
     */
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+        setIsSubmitting(true);
         const result = await signIn('credentials', {
             // redirect: false, means the function won't automatically redirect upon successful sign-in.
             redirect: false,
@@ -62,6 +66,7 @@ export default function SignInForm() {
         if (result?.url) {
             router.replace('/dashboard');
         }
+        setIsSubmitting(false);
     };
 
     return (
@@ -97,7 +102,16 @@ export default function SignInForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button className='w-full' type="submit">Sign In</Button>
+                        <Button type="submit" className='w-full' disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Please wait...
+                                </>
+                            ) : (
+                                'Sign Up'
+                            )}
+                        </Button>
                     </form>
                 </Form>
                 <div className="text-center mt-4">

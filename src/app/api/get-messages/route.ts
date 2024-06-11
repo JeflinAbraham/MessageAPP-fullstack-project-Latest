@@ -49,13 +49,22 @@ export async function GET(request: Request) {
             // .exec() is called to execute the aggregation pipeline.
         ]).exec();
 
-        if (!user || user.length === 0) {
+        if (!user) {
             return Response.json({
                 message: 'User not foundddd',
                 success: false
             },
                 { status: 404 }
             );
+        }
+        if(user.length === 0){
+            return Response.json({
+                message: 'no messages',
+                success: true
+            },
+                { status: 200 }
+            );
+
         }
 
         // The result of the aggregation query is stored in the variable user, which is an array of documents. user array contains exactly one document (user with userId = _id).
