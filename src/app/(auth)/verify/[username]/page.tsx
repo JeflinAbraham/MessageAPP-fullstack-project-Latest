@@ -17,6 +17,8 @@ import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { verifySchema } from '@/schemas/verifySchema';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function VerifyAccount() {
     const router = useRouter();
@@ -34,8 +36,11 @@ export default function VerifyAccount() {
         }
     });
 
+    const [isVerifying, setIsVerifying] = useState(false);
+
     const onSubmit = async (data: z.infer<typeof verifySchema>) => {
         try {
+            setIsVerifying(true);
             const response = await axios.post(`/api/verify-code`, {
                 username: params.username,
                 code: data.code,
@@ -57,10 +62,13 @@ export default function VerifyAccount() {
                 variant: 'destructive',
             });
         }
+        finally{
+            setIsVerifying(false);
+        }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center items-center min-h-screen bg-gray-800">
             <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
                 <div className="text-center">
                     <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
@@ -76,12 +84,21 @@ export default function VerifyAccount() {
                             render={({ field }) => (
                                 <FormItem>
                                     <label>Verification code</label>
-                                    <Input {...field} />
+                                    <Input {...field}/>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Verify</Button>
+                        <Button type="submit" className='w-full' disabled={isVerifying}>
+                            {isVerifying ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Verifying...
+                                </>
+                            ) : (
+                                'Verify'
+                            )}
+                        </Button>
                     </form>
                 </Form>
             </div>

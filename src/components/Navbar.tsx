@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import {
@@ -18,6 +18,7 @@ import { Button } from './ui/button';
 import { User } from 'next-auth';
 import { X } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 function Navbar() {
 
@@ -37,6 +38,14 @@ function Navbar() {
     const currPath = usePathname();
     const isHomePage = currPath === '/';
 
+    const [isLoading, setIsLoading] = useState(false);
+    const handleClickLogin = async () => {
+        setIsLoading(true);
+        setTimeout(() => {
+            router.replace('/sign-in');
+        }, 500);
+    }
+
     return (
         <nav className="p-4 md:p-6 shadow-md bg-gray-900 text-white">
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
@@ -49,19 +58,19 @@ function Navbar() {
                             Welcome, {user.username || user.email}
                         </span>
 
-                        {isHomePage? (
+                        {isHomePage ? (
                             <Button className="bg-white text-black hover:bg-slate-200 mr-4"
                                 onClick={() => router.replace('/dashboard')}
                             >
                                 <span>View dashboard</span>
                             </Button>
 
-                        ): (
+                        ) : (
                             <Button className="bg-white text-black hover:bg-slate-200 mr-4"
-                            onClick={() => router.replace('/')}
-                        >
-                            <span>Home</span>
-                        </Button>
+                                onClick={() => router.replace('/')}
+                            >
+                                <span>Home</span>
+                            </Button>
                         )}
 
                         {/* nextAuth automatically handles redirection after excecuting signOut() */}
@@ -88,9 +97,17 @@ function Navbar() {
 
                     </div>
                 ) : (
-                    <Link href="/sign-in">
-                        <Button className="w-full md:w-auto bg-slate-100 text-black" variant={'outline'}>Login</Button>
-                    </Link>
+                    <Button className="bg-white text-black hover:bg-slate-200 mr-4"
+                        onClick={handleClickLogin}
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            </>
+                        ) : (
+                            'Login'
+                        )}
+                    </Button>
                 )}
             </div>
         </nav>
@@ -98,3 +115,10 @@ function Navbar() {
 }
 
 export default Navbar;
+
+
+
+
+
+
+

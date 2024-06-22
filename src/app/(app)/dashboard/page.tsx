@@ -185,9 +185,7 @@ function UserDashboard() {
 
             <Button
                 className="mt-4"
-                variant="outline"
                 onClick={(e) => {
-                    e.preventDefault();
                     fetchMessages(true);
                 }}
             >
@@ -201,7 +199,7 @@ function UserDashboard() {
                 {messages.length > 0 ? (
                     messages.map((message, index) => (
                         <MessageCard
-                            key={Date.now()}
+                            key={index}
                             message={message}
                             onMessageDelete={handleDeleteMessage}
                         />

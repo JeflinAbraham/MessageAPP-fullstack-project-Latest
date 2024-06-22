@@ -66,7 +66,7 @@
             return Response.json(
                 {
                     success: false,
-                    message: 'Error checking username',
+                    message: 'Error checking usernameee',
                 },
                 { status: 500 }
             );

@@ -13,12 +13,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signInSchema } from '@/schemas/signInSchema';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import axios from 'axios';
+import { Bubblegum_Sans } from 'next/font/google';
 
 export default function SignInForm() {
     const router = useRouter();
@@ -69,6 +71,7 @@ export default function SignInForm() {
         setIsSubmitting(false);
     };
 
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-800">
             <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
@@ -102,6 +105,9 @@ export default function SignInForm() {
                                 </FormItem>
                             )}
                         />
+                        <Link href='/enter-email'>
+                            <button className='text-sky-600 underline'>forgot password</button>
+                        </Link>
                         <Button type="submit" className='w-full' disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
@@ -109,10 +115,10 @@ export default function SignInForm() {
                                     Please wait...
                                 </>
                             ) : (
-                                'Sign Up'
+                                'Sign In'
                             )}
                         </Button>
-                    </form>
+                    </form>  
                 </Form>
                 <div className="text-center mt-4">
                     <p>

@@ -24,6 +24,9 @@ import { title } from "process"
 import axios from "axios"
 import { useParams } from "next/navigation"
 import { Content } from "next/font/google"
+import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react"
+import { Loader2 } from "lucide-react"
 
 
 
@@ -41,8 +44,11 @@ function page() {
 
     const { toast } = useToast();
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const onSubmit = async (data: z.infer<typeof messageSchema>) => {
         try {
+            setIsSubmitting(true);
             const response = await axios.post('/api/send-messages', {
                 username,
                 content: data.content
@@ -68,6 +74,9 @@ function page() {
                 variant: 'destructive'
             })
         }
+        finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -79,13 +88,22 @@ function page() {
                         control={form.control}
                         render={({ field }) => (
                             <FormItem>
-                                <label className="font-bold text-2xl italic underline underline-offset-8 mb-8">Send anonymous message to @{username}</label>
-                                <Input {...field}/>
+                                <label className="font-bold text-2xl italic mb-8">Send anonymous message to @{username}</label>
+                                <Textarea {...field} placeholder="Write your anonymous message here..." />
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">send</Button>
+                    <Button type="submit" className='max-w-20 p-4' disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Sending...
+                            </>
+                        ) : (
+                            'Send'
+                        )}
+                    </Button>
                 </form>
             </Form>
         </div>

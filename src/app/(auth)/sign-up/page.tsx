@@ -26,6 +26,7 @@ import { useDebounceCallback } from 'usehooks-ts';
 import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 
 
 export default function SignUpForm() {
@@ -50,7 +51,7 @@ export default function SignUpForm() {
     useEffect(() => {
 
         // To handle the case where the user starts typing and then erases all the input
-        if(username == '') setIsCheckingUsername(false);
+        if (username == '') setIsCheckingUsername(false);
 
         const checkUsernameUnique = async () => {
             if (username) {
@@ -83,7 +84,7 @@ export default function SignUpForm() {
 
     const debounced2 = useDebounceCallback(setEmail, 500);
     useEffect(() => {
-        if(email == '') setIsCheckingEmail(false);
+        if (email == '') setIsCheckingEmail(false);
         const checkEmailUnique = async () => {
             if (email) {
                 setIsCheckingEmail(true);
@@ -134,7 +135,7 @@ export default function SignUpForm() {
         setIsSubmitting(true);
         try {
             const response = await axios.post('/api/sign-up', data);
-            if (response.data.success){
+            if (response.data.success) {
                 toast({
                     title: 'Sign Up Success',
                     description: response.data.message
@@ -160,6 +161,9 @@ export default function SignUpForm() {
             setIsSubmitting(false);
         }
     };
+
+
+
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-800">
@@ -268,6 +272,7 @@ export default function SignUpForm() {
                         </Button>
                     </form>
                 </Form>
+
                 <div className="text-center mt-4">
                     <p>
                         Already a member?{' '}

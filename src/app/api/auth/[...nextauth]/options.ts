@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GitHubProvider from "next-auth/providers/github";
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/models/user.model';
@@ -37,11 +38,11 @@ export const authOptions: NextAuthOptions = {
                     if (isPasswordCorrect) {
                         // nextAuth docs: Any object returned will be saved in `user` property of the JWT.
                         return user;
-                    } 
+                    }
                     else {
                         throw new Error('Incorrect password');
                     }
-                } 
+                }
                 catch (err: any) {
                     throw new Error(err);
                 }
@@ -58,7 +59,7 @@ export const authOptions: NextAuthOptions = {
             // user: user from nextAuth, we should mention to typescript ki iske paaas _id, isVerified, isAcceptingMessages, username properties h.
             if (user) {
                 // Convert ObjectId to string.
-                token._id = user._id?.toString(); 
+                token._id = user._id?.toString();
 
                 token.isVerified = user.isVerified;
                 token.isAcceptingMessages = user.isAcceptingMessages;
@@ -74,7 +75,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.username = token.username;
             }
             return session;
-        },
+        }
     },
     session: {
         strategy: 'jwt',
